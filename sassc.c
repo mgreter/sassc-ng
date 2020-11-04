@@ -386,7 +386,7 @@ int main(int argc, char** argv)
       sass_compiler_load_plugins(compiler, optarg);
       break;
 
-    case 'F':compiler, 
+    case 'F': 
       sass_compiler_set_srcmap_file_urls(compiler, true);
       break;
     case 'C':
