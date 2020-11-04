@@ -83,52 +83,13 @@ int get_argv_utf8(int* argc_ptr, char*** argv_ptr)
 int output(struct SassCompiler* compiler, const char* outfile, bool quiet)
 {
 
+  // Then print out all error messages
+  if (!quiet && sass_compiler_get_warn_string(compiler)) {
+    sass_print_stderr(sass_compiler_get_warn_string(compiler));
+  }
+
   const struct SassError* error = sass_compiler_get_error(compiler);
 
-  const char* warnings = sass_compiler_get_stderr_string(compiler);
-
-  /*
-  printf("Got traces: %d\n", sass_error_count_traces(error));
-
-  struct SassTrace* trace0 = sass_error_get_trace(error, 0);
-
-
-
-  struct SassSrcSpan* pstate0 = sass_trace_get_srcspan(trace0);
-
-  printf("Span[0]: %d\n", sass_srcspan_get_src_ln(pstate0));
-  printf("Span[0]: %d\n", sass_srcspan_get_src_col(pstate0));
-  printf("Span[0]: %d\n", sass_srcspan_get_span_ln(pstate0));
-  printf("Span[0]: %d\n", sass_srcspan_get_span_col(pstate0));
-  printf("Span[0]: %d\n", sass_srcspan_get_src_line(pstate0));
-  printf("Span[0]: %d\n", sass_srcspan_get_src_column(pstate0));
-
-  struct SassSource* source0 = sass_srcspan_get_source(pstate0);
-  
-  printf("Source[0]: %s\n", sass_source_get_abs_path(source0));
-  printf("Source[0]: %s\n", sass_source_get_imp_path(source0));
-  printf("Source[0]: %s\n", sass_source_get_content(source0));
-  printf("Source[0]: %s\n", sass_source_get_srcmap(source0));
-
-  struct SassTrace* trace1 = sass_error_get_trace(error, 1);
-  struct SassSrcSpan* pstate1 = sass_trace_get_srcspan(trace1);
-  struct SassSource* source1 = sass_srcspan_get_source(pstate1);
-
-  printf("Source[1]: %s\n", sass_source_get_abs_path(source1));
-  printf("Source[1]: %s\n", sass_source_get_imp_path(source1));
-  printf("Source[1]: %s\n", sass_source_get_content(source1));
-  printf("Source[1]: %s\n", sass_source_get_srcmap(source1));
-
-  exit(1);
-  */
-  // First print out all warnings
-  // if (!quiet && sass_error_get_warnings(error)) {
-  //   sass_print_stderr(sass_error_get_warnings(error));
-  // }
-  // Then print out all error messages
-  if (!quiet && sass_compiler_get_stderr_string(compiler)) {
-    sass_print_stderr(sass_compiler_get_stderr_string(compiler));
-  }
   // Finally the formatted error message
   if (sass_error_get_formatted(error)) {
     sass_print_stderr(sass_error_get_formatted(error));
@@ -199,20 +160,18 @@ struct SassImportList* foobar(const char* url, struct SassImporter* importer)
 int compile_import(struct SassCompiler* compiler, const char* outfile, bool quiet)
 {
 
-  // sass_compiler_add_custom_header(compiler,
-  //   sass_make_importer(foobar, 0, 0));
-
-  // sass_compiler_add_custom_importer(compiler,
-  //   sass_make_importer(foobar, 0, 0));
-
+  // Set the output path on the compiler
   sass_compiler_set_output_path(compiler, outfile);
 
+  // Execute all three phases
   sass_compiler_parse(compiler);
   sass_compiler_compile(compiler);
   sass_compiler_render(compiler);
 
   int rv = output(compiler, outfile, quiet);
+
   sass_delete_compiler(compiler);
+
   return rv;
 }
 
@@ -505,7 +464,6 @@ int main(int argc, char** argv)
 
 
 
-    int result = 0;
     char* outfile = 0;
     const char* dash = "-";
     char* source_map_file = 0;
@@ -527,11 +485,8 @@ int main(int argc, char** argv)
         source_map_embed = true;
       }
 
-      // This will throw and catch if file is not readable
+      // Create the entry point request (don't read yet)
       entry = sass_make_file_import(argv[optind]);
-      //import = sass_make_data_import(compiler,
-      //  sass_copy_c_string("asd { qwe: asd; }"), nullptr,
-      //  "foobar");
 
     }
     else {
@@ -542,11 +497,24 @@ int main(int argc, char** argv)
       entry = sass_make_stdin_import(NULL);
     }
 
+    // Set import format (defaults to auto)
     sass_import_set_format(entry, format);
+    // Set the entry point for the compilation
     sass_compiler_set_entry_point(compiler, entry);
+    // We create it, we kill it (shared ptr)
     sass_delete_import(entry);
 
-    result = compile_import(compiler, outfile, quiet);
+    // Set the output path on the compiler
+    sass_compiler_set_output_path(compiler, outfile);
+
+    // Execute all three phases
+    sass_compiler_parse(compiler);
+    sass_compiler_compile(compiler);
+    sass_compiler_render(compiler);
+
+    int result = output(compiler, outfile, quiet);
+
+    sass_delete_compiler(compiler);
 
     #ifdef _WIN32
         return result ? ERROR_INVALID_DATA : 0; // The data is invalid.
