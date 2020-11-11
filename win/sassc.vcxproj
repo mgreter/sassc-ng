@@ -199,12 +199,6 @@
       <LinkTimeCodeGeneration>PGInstrument</LinkTimeCodeGeneration>
       <LinkTimeCodeGeneration>PGOptimization</LinkTimeCodeGeneration>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/DUSEPROFILE</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release Optimize|x64'">/USEPROFILE %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release Training|x64'">/USEPROFILE</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release Training|Win32'">/USEPROFILE</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release Optimize|Win32'">/USEPROFILE %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/USEPROFILE</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(LIBSASS_DIR)\win\libsass.targets" />
