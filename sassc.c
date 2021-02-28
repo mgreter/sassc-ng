@@ -111,12 +111,12 @@ int output(struct SassCompiler* compiler, const char* outfile, bool quiet)
         }
         // Seems already set (makes sense)
         // setvbuf(fp, 0, _IOFBF, BUFSIZ);
-        if (content && fprintf(fd, "%s", content) < 0) {
+        if (content && fputs(content, fd) < 0) {
           perror("Error writing to output file");
           fclose(fd);
           return 1;
         }
-        if (footer && fprintf(fd, "%s", footer) < 0) {
+        if (footer && fputs(footer, fd) < 0) {
           perror("Error writing to output file");
           fclose(fd);
           return 1;
@@ -313,7 +313,7 @@ int main(int argc, char** argv)
       { NULL,                   0,                 NULL, 0}
   };
 
-  enum SassImportFormat format = SASS_IMPORT_AUTO;
+  enum SassImportSyntax format = SASS_IMPORT_AUTO;
 
   sass_compiler_set_logger_style(compiler, SASS_LOGGER_UNICODE_MONO);
 
@@ -498,7 +498,7 @@ int main(int argc, char** argv)
     }
 
     // Set import format (defaults to auto)
-    sass_import_set_format(entry, format);
+    sass_import_set_syntax(entry, format);
     // Set the entry point for the compilation
     sass_compiler_set_entry_point(compiler, entry);
     // We create it, we kill it (shared ptr)
