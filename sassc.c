@@ -83,20 +83,18 @@ int get_argv_utf8(int* argc_ptr, char*** argv_ptr)
 int output(struct SassCompiler* compiler, const char* outfile, bool quiet)
 {
 
-  // Then print out all error messages
   if (!quiet && sass_compiler_get_warn_string(compiler)) {
     sass_print_stderr(sass_compiler_get_warn_string(compiler));
   }
 
-  const struct SassError* error = sass_compiler_get_error(compiler);
-
-  // Finally the formatted error message
-  if (sass_error_get_formatted(error)) {
+  // Print error message if we have an error
+  if (sass_compiler_get_status(compiler) != 0) {
+    const struct SassError* error = sass_compiler_get_error(compiler);
     sass_print_stderr(sass_error_get_formatted(error));
   }
 
   // Write to output if no errors occurred
-  if (sass_error_get_status(error) == 0) {
+  if (sass_compiler_get_status(compiler) == 0) {
 
     // Get the parts to be added to the output file (or stdout)
     const char* content = sass_compiler_get_output_string(compiler);
@@ -136,7 +134,7 @@ int output(struct SassCompiler* compiler, const char* outfile, bool quiet)
   }
 
   // Return the original error status
-  return sass_error_get_status(error);
+  return sass_compiler_get_status(compiler);
 
 }
 // EO output
