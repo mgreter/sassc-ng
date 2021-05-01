@@ -35,18 +35,24 @@ CAT      ?= $(if $(filter $(OS),Windows_NT),type,cat)
 ifneq (,$(findstring /cygdrive/,$(PATH)))
 	UNAME := Cygwin
 	TARGET := Windows
-else ifneq (,$(findstring Windows_NT,$(OS)))
+else
+ifneq (,$(findstring Windows_NT,$(OS)))
 	UNAME := Windows
 	TARGET := Windows
-else ifneq (,$(findstring mingw32,$(MAKE)))
+else
+ifneq (,$(findstring mingw32,$(MAKE)))
 	UNAME := MinGW
 	TARGET := Windows
-else ifneq (,$(findstring MINGW32,$(shell uname -s)))
+else
+ifneq (,$(findstring MINGW32,$(shell uname -s)))
 	UNAME := MinGW
 	TARGET := Windows
 else
 	UNAME := $(shell uname -s)
 	TARGET := $(shell uname -s)
+endif
+endif
+endif
 endif
 
 ifeq ($(SASS_SASSC_PATH),)
