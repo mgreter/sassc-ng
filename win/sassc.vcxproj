@@ -119,6 +119,9 @@
   <PropertyGroup Label="VS2019 toolset selection" Condition="'$(VisualStudioVersion)' == '16.0'">
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
+  <PropertyGroup Label="VS2020 toolset selection" Condition="'$(VisualStudioVersion)' == '17.0'">
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
@@ -170,7 +173,7 @@
   <ItemDefinitionGroup Condition="$(Configuration.StartsWith('Release'))">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <StringPooling>true</StringPooling>
+      <StringPooling>false</StringPooling>
       <Optimization>MaxSpeed</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
@@ -179,7 +182,7 @@
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
-      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+      <EnableParallelCodeGeneration>false</EnableParallelCodeGeneration>
       <PreprocessorDefinitions Condition="'$(Platform)'=='Win32'">WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Platform)'=='x64'">WIN64;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
@@ -194,8 +197,8 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <OptimizeReferences>true</OptimizeReferences>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
       <LinkTimeCodeGeneration>PGInstrument</LinkTimeCodeGeneration>
       <LinkTimeCodeGeneration>PGOptimization</LinkTimeCodeGeneration>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
@@ -203,11 +206,23 @@
   </ItemDefinitionGroup>
   <Import Project="$(LIBSASS_DIR)\win\libsass.targets" />
   <ItemGroup>
-    <ClCompile Include="posix\getopt.c" />
+    <ClCompile Include="..\..\src\css_every.cpp" />
+    <ClCompile Include="..\..\src\css_invisible.cpp" />
+    <ClCompile Include="..\..\src\sel_any.cpp" />
+    <ClCompile Include="..\..\src\sel_bogus.cpp" />
+    <ClCompile Include="..\..\src\calculation.cpp" />
+    <ClCompile Include="..\..\src\sel_invisible.cpp" />
+    <ClCompile Include="..\..\src\sel_useless.cpp" />
     <ClCompile Include="..\sassc.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="posix\getopt.h" />
+    <ClInclude Include="..\..\src\css_every.hpp" />
+    <ClInclude Include="..\..\src\css_invisible.hpp" />
+    <ClInclude Include="..\..\src\sel_any.hpp" />
+    <ClInclude Include="..\..\src\sel_bogus.hpp" />
+    <ClInclude Include="..\..\src\calculation.hpp" />
+    <ClInclude Include="..\..\src\sel_invisible.hpp" />
+    <ClInclude Include="..\..\src\sel_useless.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
